@@ -1,3 +1,4 @@
+
 const prompt = require("prompt-sync")({sigint: true});
 // const prompt = require("prompt-sync");
 
@@ -28,7 +29,7 @@ class Field {
 
         for (let row = 0; row < this.rowLength; row++ ){
             for (let column = 0; column < this.columnLength; column++  ){
-                if (this.field[row][column] === "*"){ // ! For some reason this runs twice
+                if (this.field[row][column] === pathCharacter){ // ! For some reason this runs twice
                      // * Sets position of player
                     this.xPos = column;
                     this.yPos = row;
@@ -65,6 +66,7 @@ class Field {
                     break;
                 }
         }
+        this.isGameEnd(this.field[this.yPos][this.xPos]); // * Checks if the current position will end the game or nor
         this.field[this.yPos][this.xPos] = "*"; // * replaces current location of player character
         
     } // * movePlayer
@@ -128,16 +130,16 @@ class Field {
 
     isGameEnd(location){
       switch (location){
-        case "O":
+        case hole:
           console.log("Game End :( ");
           this.gameEnd = true;
           break;
-        case "^":
+        case hat:
           console.log("Game Winner!");
           this.gameEnd = true;
           break;
       }
-    }
+    } // * isGameEnd
 
     createCopy(){
       return {
@@ -149,6 +151,22 @@ class Field {
         yPos: this.yPos,
       }
     } // * createCopy
+
+
+    static generateField(holePercentage){
+        const randomColumnLength = Math.floor(Math.random() * 9) + 1;
+        const randomRowLength = Math.floor(Math.random() * 9) + 1;
+        let returnArray = [];
+
+        for (let row = 0; row < randomRowLength; row++){
+            let row = []
+            for (let column = 0; column < randomColumnLength; column++){
+                row.push(fieldCharacter);
+            }
+            returnArray.push(row);
+        }
+        console.log(returnArray);
+    }
 }
 
 
@@ -156,15 +174,16 @@ class Field {
 
 let myField = new Field([
   ['░', '*', 'O'],
-  ['░', 'O', '░'],
-  ['o', '^', '░'],
+  ['░', '░', '░'],
+  ['O', '^', '░'],
 ]);
 let copyField = myField.createCopy();
 let playerMove;
 
-while (!myField.gameEnd){
-    myField.print();
-    playerMove = prompt("Where do you want to move?");
-    myField.movePlayer(playerMove);
+Field.generateField(3);
 
-}
+// while (!myField.gameEnd){
+//     myField.print();
+//     playerMove = prompt("Where do you want to move?");
+//     myField.movePlayer(playerMove);
+// }
